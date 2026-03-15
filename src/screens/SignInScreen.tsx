@@ -6,33 +6,34 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
+  ActivityIndicator,
 } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-// Separated styles and utilities
-import { styles } from './SignInScreen.styles';
-import { isValidEmail } from '../utils/utils.ts';
-
-// Custom components and services
-import { ConfirmationDialog } from '../components/ConfirmationDialog';
+// Services
+import AuthService from '../services/AuthService';
+import SecureStoreService from '../services/SecureStoreService';
 import { authenticateWithBiometrics } from '../services/biometricService';
 
+// Styles & Utils
+import { styles } from './SignInScreen.styles';
+import { isValidEmail } from '../utils/utils';
+import { ConfirmationDialog } from '../components/ConfirmationDialog';
+
 export const SignInScreen = ({ navigation }: any) => {
-  // --- Form State ---
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
-  // --- Unified Dialog State ---
   const [dialogConfig, setDialogConfig] = useState({
     visible: false,
     title: '',
     message: '',
-    isSuccess: false, // Tracks if we need to navigate after closing
   });
 
-  // --- Standard Email/Password Sign In ---
-  const validateAndSignIn = () => {
+  // --- Manual Email/Password Sign In ---
+  const validateAndSignIn = async () => {
     setError('');
 
     if (!email || !password) {
@@ -45,55 +46,54 @@ export const SignInScreen = ({ navigation }: any) => {
       return;
     }
 
-    // Later: This is where Firebase signInWithEmailAndPassword will go!
-    setDialogConfig({
-      visible: true,
-      title: 'Success!',
-      message: `Ready to authenticate ${email} with Firebase!`,
-      isSuccess: false,
-    });
+    try {
+      setIsLoading(true);
+
+      // 1. Auth with Firebase
+      await AuthService.login(email, password);
+
+      // 2. SUCCESS: Save credentials to the secure vault for future biometric use
+      await SecureStoreService.saveCredentials(email, password);
+
+      // Note: RootNavigator automatically switches to Dashboard now
+    } catch (err: any) {
+      setError(err.message.replace('Firebase: ', ''));
+      setIsLoading(false);
+    }
   };
 
-  // --- Biometric Sign In ---
+  // --- Biometric Sign In (The "Vault" Logic) ---
   const handleBiometricLogin = async () => {
-    // Call our clean, separated service
-    const result = await authenticateWithBiometrics();
+    setError('');
 
-    if (result.isNotSupported) {
+    // 1. First, check if biometrics are even hardware-supported
+    const bioCheck = await authenticateWithBiometrics();
+
+    if (bioCheck.isNotSupported) {
       setDialogConfig({
         visible: true,
         title: 'Not Supported',
-        message: 'Biometrics are not available on this device.',
-        isSuccess: false,
+        message: 'Biometrics are not available or enrolled on this device.',
       });
       return;
     }
 
-    if (result.success) {
-      setDialogConfig({
-        visible: true,
-        title: 'Success',
-        message: 'Biometric match verified!',
-        isSuccess: true, // Set to true so we navigate on close!
-      });
-    } else if (result.error) {
-      // Only show dialog if it's an actual error (not just the user hitting cancel)
-      setDialogConfig({
-        visible: true,
-        title: 'Authentication Failed',
-        message: result.error,
-        isSuccess: false,
-      });
-    }
-  };
+    // 2. If supported, try to retrieve vaulted credentials
+    // This will trigger the system Fingerprint/FaceID prompt automatically
+    const credentials = await SecureStoreService.getStoredCredentials();
 
-  // --- Handle Dialog Close ---
-  const handleDialogConfirm = () => {
-    setDialogConfig(prev => ({ ...prev, visible: false }));
-
-    // If it was a successful login, route them to the app
-    if (dialogConfig.isSuccess) {
-      navigation.navigate('MainApp');
+    if (credentials) {
+      try {
+        setIsLoading(true);
+        // 3. Automatically log in using the retrieved email/pass
+        await AuthService.login(credentials.email, credentials.password);
+      } catch (err: any) {
+        setError(err);
+        setIsLoading(false);
+      }
+    } else {
+      // This happens if they haven't logged in manually yet or they cancelled the scan
+      setError('Please sign in manually once to enable biometrics.');
     }
   };
 
@@ -105,7 +105,6 @@ export const SignInScreen = ({ navigation }: any) => {
       >
         <Text style={styles.headerTitle}>Welcome Back</Text>
 
-        {/* Inline form error for missing/bad fields */}
         {error ? <Text style={styles.errorText}>{error}</Text> : null}
 
         <TextInput
@@ -116,6 +115,7 @@ export const SignInScreen = ({ navigation }: any) => {
           autoCapitalize="none"
           value={email}
           onChangeText={setEmail}
+          editable={!isLoading}
         />
 
         <TextInput
@@ -125,43 +125,44 @@ export const SignInScreen = ({ navigation }: any) => {
           secureTextEntry
           value={password}
           onChangeText={setPassword}
+          editable={!isLoading}
         />
 
-        <TouchableOpacity style={styles.button} onPress={validateAndSignIn}>
-          <Text style={styles.buttonText}>Sign In</Text>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={validateAndSignIn}
+          disabled={isLoading}
+        >
+          {isLoading ? (
+            <ActivityIndicator color="#fff" />
+          ) : (
+            <Text style={styles.buttonText}>Sign In</Text>
+          )}
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.biometricButton}
           onPress={handleBiometricLogin}
+          disabled={isLoading}
         >
           <Text style={styles.biometricButtonText}>Log In with Biometrics</Text>
-        </TouchableOpacity>
-
-        {/* DEVELOPER BYPASS BUTTON */}
-        <TouchableOpacity
-          style={styles.tempButton}
-          onPress={() => navigation.navigate('MainApp')}
-        >
-          <Text style={styles.buttonText}>TEMP: Bypass to App</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.linkButton}
           onPress={() => navigation.navigate('SignUp')}
+          disabled={isLoading}
         >
           <Text style={styles.linkText}>Don't have an account? Sign Up</Text>
         </TouchableOpacity>
       </KeyboardAvoidingView>
 
-      {/* --- Render the Unified Custom Dialog --- */}
       <ConfirmationDialog
         visible={dialogConfig.visible}
         title={dialogConfig.title}
         message={dialogConfig.message}
         confirmText="OK"
-        onConfirm={handleDialogConfirm}
-        // Notice we omit onCancel here, so it only shows the "OK" button
+        onConfirm={() => setDialogConfig(prev => ({ ...prev, visible: false }))}
       />
     </SafeAreaProvider>
   );

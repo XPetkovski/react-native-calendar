@@ -1,23 +1,27 @@
+// src/screens/SignUpScreen.tsx
 import React, { useState } from 'react';
 import {
   Text,
   TextInput,
   TouchableOpacity,
-  Alert,
   KeyboardAvoidingView,
-  Platform
+  Platform,
+  ActivityIndicator,
 } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { styles } from './SignUpScreen.styles';
-import { isValidEmail, isValidPassword } from '../utils/utils.ts';
+import { isValidEmail, isValidPassword } from '../utils/utils';
+
+import AuthService from '../services/AuthService'; // <-- IMPORT THE SERVICE
 
 export const SignUpScreen = ({ navigation }: any) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Basic Field Validation
-  const validateAndSignUp = () => {
+  // Real Firebase Registration
+  const validateAndSignUp = async () => {
     setError('');
 
     if (!email || !password) {
@@ -25,7 +29,6 @@ export const SignUpScreen = ({ navigation }: any) => {
       return;
     }
 
-    // Use our new utility functions!
     if (!isValidEmail(email)) {
       setError('Please enter a valid email address.');
       return;
@@ -36,7 +39,14 @@ export const SignUpScreen = ({ navigation }: any) => {
       return;
     }
 
-    Alert.alert('Success!', `Ready to send ${email} to Firebase!`);
+    try {
+      setIsLoading(true);
+      // Call Firebase! If it succeeds, RootNavigator instantly pulls you to the Dashboard
+      await AuthService.register(email, password);
+    } catch (err: any) {
+      setError(err.message.replace('Firebase: ', ''));
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -57,6 +67,7 @@ export const SignUpScreen = ({ navigation }: any) => {
           autoCapitalize="none"
           value={email}
           onChangeText={setEmail}
+          editable={!isLoading}
         />
 
         <TextInput
@@ -66,15 +77,25 @@ export const SignUpScreen = ({ navigation }: any) => {
           secureTextEntry
           value={password}
           onChangeText={setPassword}
+          editable={!isLoading}
         />
 
-        <TouchableOpacity style={styles.button} onPress={validateAndSignUp}>
-          <Text style={styles.buttonText}>Sign Up</Text>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={validateAndSignUp}
+          disabled={isLoading}
+        >
+          {isLoading ? (
+            <ActivityIndicator color="#fff" />
+          ) : (
+            <Text style={styles.buttonText}>Sign Up</Text>
+          )}
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.linkButton}
           onPress={() => navigation.navigate('SignIn')}
+          disabled={isLoading}
         >
           <Text style={styles.linkText}>Already have an account? Sign In</Text>
         </TouchableOpacity>

@@ -1,17 +1,24 @@
 // src/screens/ProfileScreen.tsx
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { styles } from './ProfileScreen.styles';
 import { ProfileTextInput } from '../components/ProfileTextInput';
 import { ConfirmationDialog } from '../components/ConfirmationDialog';
-import { isValidEmail } from '../utils/utils.ts';
+import { isValidEmail } from '../utils/utils';
 
-export const ProfileScreen = ({ navigation }: any) => {
+// --- Import the Auth Service ---
+import AuthService from '../services/AuthService';
+
+export const ProfileScreen = () => {
+  // Grab the real user from Firebase!
+  const currentUser = AuthService.getCurrentUser();
+
   const [firstName, setFirstName] = useState('Hristijan');
   const [lastName, setLastName] = useState('Petkovski');
-  const [email, setEmail] = useState('hristijan@example.com');
+  // Automatically populate the real email, fallback if somehow null
+  const [email, setEmail] = useState(currentUser?.email || '');
   const [role, setRole] = useState('React Native Developer');
   const [emailError, setEmailError] = useState('');
 
@@ -25,25 +32,32 @@ export const ProfileScreen = ({ navigation }: any) => {
       setEmailError('Please enter a valid email address.');
       return;
     }
-    // Will hook up to Firebase later
+    // Will hook up to Firestore later
     console.log('Profile Updated!');
   };
 
   // --- Modal Actions ---
-  const confirmLogout = () => {
+  const confirmLogout = async () => {
     setLogoutModalVisible(false);
-    navigation.reset({ index: 0, routes: [{ name: 'SignIn' }] });
+    try {
+      // 1. Tell Firebase to destroy the session
+      await AuthService.logout();
+      // 2. DO NOTHING ELSE! The RootNavigator will automatically pull you to the Auth screens.
+    } catch (error: any) {
+      Alert.alert('Logout Error', error.message);
+    }
   };
 
   const confirmDeactivate = () => {
     setDeactivateModalVisible(false);
-    navigation.reset({ index: 0, routes: [{ name: 'SignIn' }] });
+    // We will wire this up to a Firebase "Delete User" function later!
+    console.log('Account deactivated');
   };
 
   return (
     <SafeAreaProvider style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.container}>
-        <Text style={styles.headerTitle}>{firstName + " " + lastName}</Text>
+        <Text style={styles.headerTitle}>{firstName + ' ' + lastName}</Text>
 
         <View style={styles.formContainer}>
           <ProfileTextInput
@@ -63,6 +77,7 @@ export const ProfileScreen = ({ navigation }: any) => {
             keyboardType="email-address"
             autoCapitalize="none"
             error={emailError}
+            editable={false} // Usually a good idea to prevent changing email without re-auth
           />
           <ProfileTextInput
             label="Position"
@@ -78,7 +93,6 @@ export const ProfileScreen = ({ navigation }: any) => {
           <Text style={styles.updateButtonText}>Update Profile</Text>
         </TouchableOpacity>
 
-        {/* Instead of Alert, we just toggle the state to true! */}
         <TouchableOpacity
           style={styles.logoutButton}
           onPress={() => setLogoutModalVisible(true)}
