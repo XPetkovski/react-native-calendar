@@ -47,7 +47,6 @@ export const HeaderAvatar = () => {
       {isLoading ? (
         <ActivityIndicator size="small" color="#fff" />
       ) : (
-        // We can even use props.tintColor if we wanted to match the theme!
         <Text style={styles.avatarText}>{initials}</Text>
       )}
     </TouchableOpacity>

@@ -26,7 +26,7 @@ export const ProfileScreen = () => {
 
   const [isLoading, setIsLoading] = useState(true);
   const [isUpdating, setIsUpdating] = useState(false);
-
+  // left some screens with classic simpler way of coding useStates for view purpose
   const [isLogoutModalVisible, setLogoutModalVisible] = useState(false);
   const [isDeactivateModalVisible, setDeactivateModalVisible] = useState(false);
   const [isSuccessModalVisible, setSuccessModalVisible] = useState(false);

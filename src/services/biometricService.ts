@@ -1,4 +1,3 @@
-// src/services/biometricService.ts
 import ReactNativeBiometrics from 'react-native-biometrics';
 
 interface BiometricResult {
@@ -12,14 +11,12 @@ export const authenticateWithBiometrics =
     const rnBiometrics = new ReactNativeBiometrics();
 
     try {
-      // 1. Check if hardware is available
       const { available } = await rnBiometrics.isSensorAvailable();
 
       if (!available) {
         return { success: false, isNotSupported: true };
       }
 
-      // 2. Trigger the prompt
       const { success } = await rnBiometrics.simplePrompt({
         promptMessage: 'Log in to QuipuApp',
       });
@@ -27,7 +24,6 @@ export const authenticateWithBiometrics =
       if (success) {
         return { success: true };
       } else {
-        // User cancelled or failed
         return {
           success: false,
           error: 'Biometric authentication was cancelled or failed.',

@@ -1,4 +1,3 @@
-// src/screens/SignInScreen.tsx
 import React, { useState } from 'react';
 import {
   Text,
@@ -9,18 +8,15 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-
-// Services
 import AuthService from '../services/AuthService';
 import SecureStoreService from '../services/SecureStoreService';
 import { authenticateWithBiometrics } from '../services/biometricService';
-
-// Styles & Utils
 import { styles } from './SignInScreen.styles';
 import { isValidEmail } from '../utils/utils';
 import { ConfirmationDialog } from '../components/common/ConfirmationDialog.tsx';
 
 export const SignInScreen = ({ navigation }: any) => {
+  // left some screens with classic simpler way of coding useStates for view purpose
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -48,14 +44,9 @@ export const SignInScreen = ({ navigation }: any) => {
 
     try {
       setIsLoading(true);
-
       // 1. Auth with Firebase
       await AuthService.login(email, password);
-
-      // 2. SUCCESS: Save credentials to the secure vault for future biometric use
       await SecureStoreService.saveCredentials(email, password);
-
-      // Note: RootNavigator automatically switches to Dashboard now
     } catch (err: any) {
       setError(err.message.replace('Firebase: ', ''));
       setIsLoading(false);
@@ -66,7 +57,7 @@ export const SignInScreen = ({ navigation }: any) => {
   const handleBiometricLogin = async () => {
     setError('');
 
-    // 1. First, check if biometrics are even hardware-supported
+    // First, check if biometrics are hardware-supported
     const bioCheck = await authenticateWithBiometrics();
 
     if (bioCheck.isNotSupported) {
@@ -79,20 +70,18 @@ export const SignInScreen = ({ navigation }: any) => {
     }
 
     // 2. If supported, try to retrieve vaulted credentials
-    // This will trigger the system Fingerprint/FaceID prompt automatically
     const credentials = await SecureStoreService.getStoredCredentials();
 
     if (credentials) {
       try {
         setIsLoading(true);
-        // 3. Automatically log in using the retrieved email/pass
+        // Auto log in with retrieved email/pass
         await AuthService.login(credentials.email, credentials.password);
       } catch (err: any) {
         setError(err);
         setIsLoading(false);
       }
     } else {
-      // This happens if they haven't logged in manually yet or they cancelled the scan
       setError('Please sign in manually once to enable biometrics.');
     }
   };

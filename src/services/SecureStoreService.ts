@@ -1,4 +1,3 @@
-// src/services/SecureStoreService.ts
 import * as Keychain from 'react-native-keychain';
 
 class SecureStoreService {
@@ -25,7 +24,7 @@ class SecureStoreService {
       });
 
       if (credentials) {
-        console.log('🔓 Vault opened successfully for:', credentials.username);
+        console.log('Vault opened successfully for:', credentials.username);
         return { email: credentials.username, password: credentials.password };
       }
 

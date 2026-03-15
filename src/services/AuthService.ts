@@ -1,4 +1,3 @@
-// src/services/AuthService.ts
 import {
   createUserWithEmailAndPassword,
   deleteUser,
@@ -9,7 +8,6 @@ import {
 import { auth } from '../config/firebase.ts';
 
 class AuthService {
-  // Sign Up
   async register(email: string, pass: string): Promise<User> {
     const userCredential = await createUserWithEmailAndPassword(
       auth,
@@ -19,13 +17,11 @@ class AuthService {
     return userCredential.user;
   }
 
-  // Sign In
   async login(email: string, pass: string): Promise<User> {
     const userCredential = await signInWithEmailAndPassword(auth, email, pass);
     return userCredential.user;
   }
 
-  // Sign Out
   async logout(): Promise<void> {
     await signOut(auth);
   }
@@ -37,10 +33,9 @@ class AuthService {
     }
   }
 
-  // Get current user
   getCurrentUser(): User | null {
     return auth.currentUser;
   }
 }
 
-export default new AuthService(); // Export as a singleton
+export default new AuthService(); // singleton

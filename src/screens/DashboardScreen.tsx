@@ -1,4 +1,3 @@
-// src/screens/DashboardScreen.tsx
 import React, { useState, useEffect } from 'react';
 import {
   View,
@@ -8,59 +7,49 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
-// Components & Icons
 import { QCalendar } from '../components/calendar/QCalendar';
 import { EventModal, CalendarEvent } from '../components/calendar/EventModal';
-import { ConfirmationDialog } from '../components/common/ConfirmationDialog.tsx';
+import { ConfirmationDialog } from '../components/common/ConfirmationDialog';
 import { OnboardingModal } from '../components/profile/OnboardingModal';
 import { TrashIcon } from '../assets/icons/TrashIcon';
-
-// Services
 import AuthService from '../services/AuthService';
 import UserService from '../services/UserService';
 import EventService from '../services/EventService';
-
-// Styles
 import { styles } from './DashboardScreen.styles';
 
 export const DashboardScreen = () => {
   const [activeDate, setActiveDate] = useState<Date>(new Date());
 
-  // Create/Edit Modal State
-  const [isModalVisible, setModalVisible] = useState(false);
-  const [editingEvent, setEditingEvent] = useState<CalendarEvent | null>(null);
+  const [eventsState, setEventsState] = useState({
+    data: {} as Record<string, CalendarEvent[]>,
+    isLoading: true,
+  });
 
-  // Delete Modal State
-  const [isDeleteModalVisible, setDeleteModalVisible] = useState(false);
-  const [eventToDelete, setEventToDelete] = useState<string | null>(null);
-
-  // Onboarding State
-  const [isOnboardingVisible, setOnboardingVisible] = useState(false);
-
-  // Cloud Data State
-  const [eventsData, setEventsData] = useState<Record<string, CalendarEvent[]>>(
-    {},
-  );
-  const [isLoadingEvents, setIsLoadingEvents] = useState(true);
+  const [modalState, setModalState] = useState({
+    onboarding: false,
+    event: false,
+    delete: false,
+    editingEvent: null as CalendarEvent | null,
+    eventToDelete: null as string | null,
+  });
 
   // --- Date Logic ---
   const formattedActiveDate = activeDate.toISOString().split('T')[0];
   const formattedToday = new Date().toISOString().split('T')[0];
-
-  // A date is considered "past" if it is strictly before today's date string
   const isPastDate = formattedActiveDate < formattedToday;
 
-  const todaysEvents = eventsData[formattedActiveDate] || [];
+  const todaysEvents = eventsState.data[formattedActiveDate] || [];
 
-  // 1. Profile Check (Onboarding)
+  // Profile Check (Onboarding)
   useEffect(() => {
     const checkUserProfile = async () => {
       const user = AuthService.getCurrentUser();
       if (user) {
         try {
           const profile = await UserService.getUserProfile(user.uid);
-          if (!profile) setOnboardingVisible(true);
+          if (!profile) {
+            setModalState(prev => ({ ...prev, onboarding: true }));
+          }
         } catch (error) {
           console.error('Error checking profile:', error);
         }
@@ -69,17 +58,19 @@ export const DashboardScreen = () => {
     checkUserProfile();
   }, []);
 
-  // 2. Real-time Firebase Listener
+  // Firebase Listener
   useEffect(() => {
-    setIsLoadingEvents(true);
-    const unsubscribe = EventService.subscribeToEvents(data => {
-      setEventsData(data);
-      setIsLoadingEvents(false);
+    setEventsState(prev => ({ ...prev, isLoading: true }));
+
+    const unsubscribe = EventService.subscribeToEvents(fetchedData => {
+      setEventsState({
+        data: fetchedData,
+        isLoading: false,
+      });
     });
+
     return () => unsubscribe();
   }, []);
-
-  // --- Handlers ---
 
   const handleOnboardingSave = async (
     firstName: string,
@@ -94,25 +85,27 @@ export const DashboardScreen = () => {
         position,
         email: user.email || '',
       });
-      setOnboardingVisible(false);
+      setModalState(prev => ({ ...prev, onboarding: false }));
     }
   };
 
   const handleDateSelected = (date: Date) => setActiveDate(date);
 
   const openCreateModal = () => {
-    setEditingEvent(null);
-    setModalVisible(true);
+    setModalState(prev => ({ ...prev, event: true, editingEvent: null }));
   };
 
   const openEditModal = (event: CalendarEvent) => {
-    setEditingEvent(event);
-    setModalVisible(true);
+    setModalState(prev => ({ ...prev, event: true, editingEvent: event }));
+  };
+
+  const closeEventModal = () => {
+    setModalState(prev => ({ ...prev, event: false, editingEvent: null }));
   };
 
   const handleSaveEvent = async (savedEvent: CalendarEvent) => {
     try {
-      if (editingEvent) {
+      if (modalState.editingEvent) {
         await EventService.updateEvent(savedEvent.id, {
           title: savedEvent.title,
           time: savedEvent.time,
@@ -134,20 +127,22 @@ export const DashboardScreen = () => {
   };
 
   const triggerDelete = (eventId: string) => {
-    setEventToDelete(eventId);
-    setDeleteModalVisible(true);
+    setModalState(prev => ({ ...prev, delete: true, eventToDelete: eventId }));
+  };
+
+  const closeDeleteModal = () => {
+    setModalState(prev => ({ ...prev, delete: false, eventToDelete: null }));
   };
 
   const confirmDelete = async () => {
-    if (eventToDelete) {
+    if (modalState.eventToDelete) {
       try {
-        await EventService.deleteEvent(eventToDelete);
+        await EventService.deleteEvent(modalState.eventToDelete);
       } catch (error) {
         console.error('Failed to delete event:', error);
       }
     }
-    setDeleteModalVisible(false);
-    setEventToDelete(null);
+    closeDeleteModal();
   };
 
   return (
@@ -166,7 +161,6 @@ export const DashboardScreen = () => {
             Activity for {activeDate.toLocaleDateString()}
           </Text>
 
-          {/* Hide ADD button if the date is in the past */}
           {!isPastDate && (
             <TouchableOpacity onPress={openCreateModal}>
               <Text style={styles.addButtonText}>+ Add</Text>
@@ -175,7 +169,7 @@ export const DashboardScreen = () => {
         </View>
 
         <View style={styles.dataContainer}>
-          {isLoadingEvents ? (
+          {eventsState.isLoading ? (
             <ActivityIndicator
               size="small"
               color="#0052cc"
@@ -188,7 +182,6 @@ export const DashboardScreen = () => {
               <TouchableOpacity
                 key={event.id}
                 style={styles.eventCard}
-                // Only allow editing if it's NOT a past date
                 onPress={() => !isPastDate && openEditModal(event)}
                 activeOpacity={isPastDate ? 1 : 0.2}
               >
@@ -203,7 +196,6 @@ export const DashboardScreen = () => {
                   ) : null}
                 </View>
 
-                {/* Hide DELETE button if the date is in the past */}
                 {!isPastDate && (
                   <TouchableOpacity
                     style={styles.deleteButton}
@@ -218,30 +210,26 @@ export const DashboardScreen = () => {
         </View>
       </ScrollView>
 
-      {/* Modals */}
       <EventModal
-        visible={isModalVisible}
+        visible={modalState.event}
         selectedDate={activeDate}
-        initialEvent={editingEvent}
-        onClose={() => setModalVisible(false)}
+        initialEvent={modalState.editingEvent}
+        onClose={closeEventModal}
         onSave={handleSaveEvent}
       />
 
       <ConfirmationDialog
-        visible={isDeleteModalVisible}
+        visible={modalState.delete}
         title="Delete Meeting"
         message="Are you sure you want to delete this event? This action cannot be undone."
         confirmText="Delete"
         isDestructive={true}
-        onCancel={() => {
-          setDeleteModalVisible(false);
-          setEventToDelete(null);
-        }}
+        onCancel={closeDeleteModal}
         onConfirm={confirmDelete}
       />
 
       <OnboardingModal
-        visible={isOnboardingVisible}
+        visible={modalState.onboarding}
         onSave={handleOnboardingSave}
       />
     </SafeAreaView>
