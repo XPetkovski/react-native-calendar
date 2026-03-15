@@ -1,13 +1,18 @@
 // src/screens/DashboardScreen.tsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 // Components & Icons
 import { QCalendar } from '../components/calendar/QCalendar';
 import { EventModal, CalendarEvent } from '../components/calendar/EventModal';
-import { ConfirmationDialog } from '../components/ConfirmationDialog'; // <-- Imported YOUR dialog
+import { ConfirmationDialog } from '../components/ConfirmationDialog';
+import { OnboardingModal } from '../components/profile/OnboardingModal'; // <-- IMPORT ONBOARDING
 import { TrashIcon } from '../assets/icons/TrashIcon';
+
+// Services
+import AuthService from '../services/AuthService';
+import UserService from '../services/UserService';
 
 // Styles
 import { styles } from './DashboardScreen.styles';
@@ -23,7 +28,10 @@ export const DashboardScreen = () => {
   const [isDeleteModalVisible, setDeleteModalVisible] = useState(false);
   const [eventToDelete, setEventToDelete] = useState<string | null>(null);
 
-  // Fake Database for Events (Format: { 'YYYY-MM-DD': [Event1, Event2] })
+  // Onboarding State
+  const [isOnboardingVisible, setOnboardingVisible] = useState(false);
+
+  // Fake Database for Events (We will replace this with EventService next!)
   const [eventsData, setEventsData] = useState<Record<string, CalendarEvent[]>>(
     {},
   );
@@ -31,9 +39,43 @@ export const DashboardScreen = () => {
   const formattedActiveDate = activeDate.toISOString().split('T')[0];
   const todaysEvents = eventsData[formattedActiveDate] || [];
 
-  const handleDateSelected = (date: Date) => {
-    setActiveDate(date);
+  // --- NEW: Check if user needs to complete profile ---
+  useEffect(() => {
+    const checkUserProfile = async () => {
+      const user = AuthService.getCurrentUser();
+      if (user) {
+        try {
+          const profile = await UserService.getUserProfile(user.uid);
+          if (!profile) {
+            setOnboardingVisible(true); // Pop the modal if no profile exists!
+          }
+        } catch (error) {
+          console.error('Error checking profile:', error);
+        }
+      }
+    };
+    checkUserProfile();
+  }, []);
+
+  // --- NEW: Handle Onboarding Save ---
+  const handleOnboardingSave = async (
+    firstName: string,
+    lastName: string,
+    position: string,
+  ) => {
+    const user = AuthService.getCurrentUser();
+    if (user) {
+      await UserService.createUserProfile(user.uid, {
+        firstName,
+        lastName,
+        position,
+        email: user.email || '',
+      });
+      setOnboardingVisible(false);
+    }
   };
+
+  const handleDateSelected = (date: Date) => setActiveDate(date);
 
   const openCreateModal = () => {
     setEditingEvent(null);
@@ -54,10 +96,7 @@ export const DashboardScreen = () => {
         ? existingEvents.map(e => (e.id === savedEvent.id ? savedEvent : e))
         : [...existingEvents, savedEvent];
 
-      return {
-        ...prevData,
-        [formattedActiveDate]: updatedEvents,
-      };
+      return { ...prevData, [formattedActiveDate]: updatedEvents };
     });
   };
 
@@ -73,11 +112,7 @@ export const DashboardScreen = () => {
         const filteredEvents = existingEvents.filter(
           e => e.id !== eventToDelete,
         );
-
-        return {
-          ...prevData,
-          [formattedActiveDate]: filteredEvents,
-        };
+        return { ...prevData, [formattedActiveDate]: filteredEvents };
       });
     }
     setDeleteModalVisible(false);
@@ -137,7 +172,7 @@ export const DashboardScreen = () => {
         </View>
       </ScrollView>
 
-      {/* Reusable Create/Edit Modal */}
+      {/* Calendar Modals */}
       <EventModal
         visible={isModalVisible}
         selectedDate={activeDate}
@@ -146,18 +181,23 @@ export const DashboardScreen = () => {
         onSave={handleSaveEvent}
       />
 
-      {/* --- YOUR Custom Confirmation Dialog --- */}
       <ConfirmationDialog
         visible={isDeleteModalVisible}
         title="Delete Meeting"
         message="Are you sure you want to delete this event? This action cannot be undone."
         confirmText="Delete"
-        isDestructive={true} // Triggers the red button styling!
+        isDestructive={true}
         onCancel={() => {
           setDeleteModalVisible(false);
           setEventToDelete(null);
         }}
         onConfirm={confirmDelete}
+      />
+
+      {/* --- NEW: Onboarding Modal --- */}
+      <OnboardingModal
+        visible={isOnboardingVisible}
+        onSave={handleOnboardingSave}
       />
     </SafeAreaView>
   );

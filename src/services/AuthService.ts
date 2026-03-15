@@ -1,6 +1,7 @@
 // src/services/AuthService.ts
 import {
   createUserWithEmailAndPassword,
+  deleteUser,
   signInWithEmailAndPassword,
   signOut,
   User,
@@ -27,6 +28,13 @@ class AuthService {
   // Sign Out
   async logout(): Promise<void> {
     await signOut(auth);
+  }
+
+  async deleteAccount(): Promise<void> {
+    const user = auth.currentUser;
+    if (user) {
+      await deleteUser(user);
+    }
   }
 
   // Get current user
