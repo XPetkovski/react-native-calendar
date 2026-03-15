@@ -10,8 +10,8 @@ import {
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { styles } from './ProfileScreen.styles';
-import { ProfileTextInput } from '../components/ProfileTextInput';
-import { ConfirmationDialog } from '../components/ConfirmationDialog';
+import { ProfileTextInput } from '../components/common/ProfileTextInput.tsx';
+import { ConfirmationDialog } from '../components/common/ConfirmationDialog.tsx';
 
 // Services
 import AuthService from '../services/AuthService';

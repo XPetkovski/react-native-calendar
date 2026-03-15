@@ -9,7 +9,7 @@ import {
   Platform,
   ActivityIndicator,
 } from 'react-native';
-import { styles } from './OnboardingModal.styles.ts';
+import { styles } from './OnboardingModal.styles';
 
 interface OnboardingModalProps {
   visible: boolean;
@@ -24,20 +24,41 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
   visible,
   onSave,
 }) => {
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [position, setPosition] = useState('');
+  // --- Combined Form State ---
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    position: '',
+  });
+
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
+  // Generic handler to update any field in the object
+  const handleInputChange = (field: keyof typeof formData, value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: value,
+    }));
+    if (error) setError(''); // Clear error when user starts typing
+  };
+
   const handleSave = async () => {
+    const { firstName, lastName, position } = formData;
+
     if (!firstName || !lastName || !position) {
       setError('Please fill out all fields.');
       return;
     }
+
     setIsLoading(true);
-    await onSave(firstName, lastName, position);
-    setIsLoading(false);
+    try {
+      await onSave(firstName, lastName, position);
+    } catch {
+      setError('Failed to save profile. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -57,20 +78,20 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
           <TextInput
             style={styles.input}
             placeholder="First Name"
-            value={firstName}
-            onChangeText={setFirstName}
+            value={formData.firstName}
+            onChangeText={val => handleInputChange('firstName', val)}
           />
           <TextInput
             style={styles.input}
             placeholder="Last Name"
-            value={lastName}
-            onChangeText={setLastName}
+            value={formData.lastName}
+            onChangeText={val => handleInputChange('lastName', val)}
           />
           <TextInput
             style={styles.input}
             placeholder="Your Position (e.g. Developer)"
-            value={position}
-            onChangeText={setPosition}
+            value={formData.position}
+            onChangeText={val => handleInputChange('position', val)}
           />
 
           <TouchableOpacity

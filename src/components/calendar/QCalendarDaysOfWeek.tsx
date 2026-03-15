@@ -5,7 +5,7 @@ import { styles } from './QCalendar.styles';
 
 const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-export const QCalendarDaysOfWeek: React.FC = () => {
+export const QCalendarDaysOfWeek: any = () => {
   return (
     <View style={styles.weekDaysContainer}>
       {WEEKDAYS.map(day => (

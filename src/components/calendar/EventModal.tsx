@@ -11,18 +11,17 @@ import {
 } from 'react-native';
 import { styles } from './EventModal.styles';
 
-// Define what a Meeting/Event looks like
 export interface CalendarEvent {
   id: string;
   title: string;
-  time: string; // e.g., "14:00"
+  time: string;
   description: string;
 }
 
 interface EventModalProps {
   visible: boolean;
   selectedDate: Date;
-  initialEvent?: CalendarEvent | null; // If provided, we are Editing. If null, we are Creating.
+  initialEvent?: CalendarEvent | null;
   onClose: () => void;
   onSave: (event: CalendarEvent) => void;
 }
@@ -34,38 +33,50 @@ export const EventModal: React.FC<EventModalProps> = ({
   onClose,
   onSave,
 }) => {
-  const [title, setTitle] = useState('');
-  const [time, setTime] = useState('');
-  const [description, setDescription] = useState('');
+  // --- 1. Combined Form State (Inline, matching your style) ---
+  const [formData, setFormData] = useState({
+    title: '',
+    time: '',
+    description: '',
+  });
 
-  // When the modal opens, check if we are editing or creating
+  // --- 2. Generic Input Handler ---
+  const handleInputChange = (field: keyof typeof formData, value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
+  // --- 3. Sync state when modal opens ---
   useEffect(() => {
     if (visible) {
-      if (initialEvent) {
-        // Edit Mode: Fill inputs with existing data
-        setTitle(initialEvent.title);
-        setTime(initialEvent.time);
-        setDescription(initialEvent.description);
-      } else {
-        // Create Mode: Clear inputs
-        setTitle('');
-        setTime('');
-        setDescription('');
-      }
+      setFormData({
+        title: initialEvent?.title || '',
+        time: initialEvent?.time || '',
+        description: initialEvent?.description || '',
+      });
     }
   }, [visible, initialEvent]);
 
   const handleSave = () => {
-    if (!title.trim()) return; // Don't save if title is empty
+    const { title, time, description } = formData;
 
-    const newEvent: CalendarEvent = {
-      id: initialEvent ? initialEvent.id : Date.now().toString(), // Generate a fake ID for new events
-      title,
-      time,
-      description,
+    // Basic Validation (Finesse: check for whitespace only)
+    if (!title.trim()) return;
+
+    const eventToSave: CalendarEvent = {
+      // If we are editing, keep the original ID; otherwise, generate a temporary one
+      id: initialEvent?.id || Date.now().toString(),
+      title: title.trim(),
+      time: time.trim(),
+      description: description.trim(),
     };
 
-    onSave(newEvent);
+    onSave(eventToSave);
+
+    // Clear the form data when saving so it's fresh for the next "New Meeting"
+    setFormData({ title: '', time: '', description: '' });
     onClose();
   };
 
@@ -95,35 +106,39 @@ export const EventModal: React.FC<EventModalProps> = ({
             })}
           </Text>
 
+          {/* Form Fields using our generic handler */}
           <TextInput
             style={styles.input}
             placeholder="Meeting Title"
             placeholderTextColor="#aaa"
-            value={title}
-            onChangeText={setTitle}
+            value={formData.title}
+            onChangeText={val => handleInputChange('title', val)}
           />
 
           <TextInput
             style={styles.input}
             placeholder="Time (e.g. 14:00)"
             placeholderTextColor="#aaa"
-            value={time}
-            onChangeText={setTime}
+            value={formData.time}
+            onChangeText={val => handleInputChange('time', val)}
           />
 
           <TextInput
             style={[styles.input, styles.textArea]}
             placeholder="Description..."
             placeholderTextColor="#aaa"
-            value={description}
-            onChangeText={setDescription}
+            value={formData.description}
+            onChangeText={val => handleInputChange('description', val)}
             multiline
           />
 
           <View style={styles.buttonRow}>
             <TouchableOpacity
               style={[styles.button, styles.cancelButton]}
-              onPress={onClose}
+              onPress={() => {
+                setFormData({ title: '', time: '', description: '' }); // Clear on cancel too
+                onClose();
+              }}
             >
               <Text style={styles.cancelButtonText}>Cancel</Text>
             </TouchableOpacity>

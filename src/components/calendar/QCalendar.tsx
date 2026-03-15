@@ -1,9 +1,6 @@
-// src/components/calendar/QCalendar.tsx
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { View } from 'react-native';
 import { styles } from './QCalendar.styles';
-
-// Import our new sub-components
 import { QCalendarHeader } from './QCalendarHeader';
 import { QCalendarDaysOfWeek } from './QCalendarDaysOfWeek';
 import { QCalendarGrid } from './QCalendarGrid';
@@ -13,29 +10,50 @@ interface QCalendarProps {
 }
 
 export const QCalendar: React.FC<QCalendarProps> = ({ onDateSelect }) => {
-  // --- State ---
-  const [currentDate, setCurrentDate] = useState(new Date());
-  const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
+  const [calendarState, setCalendarState] = useState({
+    currentDate: new Date(),
+    selectedDate: new Date() as Date | null,
+  });
 
-  // --- Date Math Helpers ---
-  const year = currentDate.getFullYear();
-  const month = currentDate.getMonth();
+  // Destructure for cleaner usage below
+  const { currentDate, selectedDate } = calendarState;
 
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-  const firstDayOfMonth = new Date(year, month, 1).getDay();
+  // --- 2. Date Math Helpers (Memoized for performance finesse) ---
+  // This ensures the math only runs when the user changes the month/year!
+  const { year, month, daysInMonth, firstDayOfMonth } = useMemo(() => {
+    const y = currentDate.getFullYear();
+    const m = currentDate.getMonth();
+    return {
+      year: y,
+      month: m,
+      daysInMonth: new Date(y, m + 1, 0).getDate(),
+      firstDayOfMonth: new Date(y, m, 1).getDay(),
+    };
+  }, [currentDate]);
 
-  // --- Handlers ---
+  // --- 3. Handlers ---
   const handlePrevMonth = () => {
-    setCurrentDate(new Date(year, month - 1, 1));
+    setCalendarState(prev => ({
+      ...prev,
+      currentDate: new Date(year, month - 1, 1),
+    }));
   };
 
   const handleNextMonth = () => {
-    setCurrentDate(new Date(year, month + 1, 1));
+    setCalendarState(prev => ({
+      ...prev,
+      currentDate: new Date(year, month + 1, 1),
+    }));
   };
 
   const handleDayPress = (day: number) => {
     const newSelectedDate = new Date(year, month, day);
-    setSelectedDate(newSelectedDate);
+
+    setCalendarState(prev => ({
+      ...prev,
+      selectedDate: newSelectedDate,
+    }));
+
     if (onDateSelect) {
       onDateSelect(newSelectedDate);
     }

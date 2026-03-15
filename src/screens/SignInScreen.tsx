@@ -18,7 +18,7 @@ import { authenticateWithBiometrics } from '../services/biometricService';
 // Styles & Utils
 import { styles } from './SignInScreen.styles';
 import { isValidEmail } from '../utils/utils';
-import { ConfirmationDialog } from '../components/ConfirmationDialog';
+import { ConfirmationDialog } from '../components/common/ConfirmationDialog.tsx';
 
 export const SignInScreen = ({ navigation }: any) => {
   const [email, setEmail] = useState('');

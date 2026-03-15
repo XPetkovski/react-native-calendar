@@ -12,7 +12,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 // Components & Icons
 import { QCalendar } from '../components/calendar/QCalendar';
 import { EventModal, CalendarEvent } from '../components/calendar/EventModal';
-import { ConfirmationDialog } from '../components/ConfirmationDialog';
+import { ConfirmationDialog } from '../components/common/ConfirmationDialog.tsx';
 import { OnboardingModal } from '../components/profile/OnboardingModal';
 import { TrashIcon } from '../assets/icons/TrashIcon';
 

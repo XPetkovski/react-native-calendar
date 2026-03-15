@@ -1,7 +1,6 @@
-// src/components/ConfirmationDialog.tsx
 import React from 'react';
 import { Modal, View, Text, TouchableOpacity } from 'react-native';
-import { styles } from './ConfirmationDialog.styles';
+import { styles } from './ConfirmationDialog.styles.ts';
 
 interface ConfirmationDialogProps {
   visible: boolean;
@@ -11,14 +10,14 @@ interface ConfirmationDialogProps {
   cancelText?: string;
   isDestructive?: boolean;
   onConfirm: () => void;
-  onCancel?: () => void; // <--- Make this optional
+  onCancel?: () => void;
 }
 
 export const ConfirmationDialog = ({
   visible,
   title,
   message,
-  confirmText = 'OK', // Changed default to OK
+  confirmText = 'OK',
   cancelText = 'Cancel',
   isDestructive = false,
   onConfirm,
@@ -37,7 +36,6 @@ export const ConfirmationDialog = ({
           <Text style={styles.message}>{message}</Text>
 
           <View style={styles.buttonContainer}>
-            {/* Conditionally render the cancel button */}
             {onCancel && (
               <TouchableOpacity
                 style={[styles.button, styles.cancelButton]}
