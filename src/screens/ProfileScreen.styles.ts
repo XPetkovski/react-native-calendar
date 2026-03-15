@@ -4,12 +4,12 @@ import { StyleSheet } from 'react-native';
 export const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#f9f9f9'
+    backgroundColor: '#f9f9f9',
   },
   container: {
     flex: 1,
     backgroundColor: '#f9f9f9',
-    paddingHorizontal: 20
+    paddingHorizontal: 20,
   },
   headerTitle: {
     fontSize: 32,
@@ -51,5 +51,13 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 40,
   },
-  deactivateButtonText: { color: '#fff', fontSize: 18, fontWeight: 'bold' },
+  deactivateButtonText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  activityIndicator: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });

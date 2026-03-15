@@ -1,4 +1,11 @@
-import { deleteDoc, doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
+import {
+  deleteDoc,
+  doc,
+  getDoc,
+  onSnapshot,
+  setDoc,
+  updateDoc,
+} from 'firebase/firestore';
 import { db } from '../config/firebase.ts';
 
 export interface UserProfile {
@@ -34,6 +41,22 @@ class UserService {
   async deleteUserProfile(uid: string) {
     const docRef = doc(db, 'users', uid);
     await deleteDoc(docRef);
+  }
+
+  subscribeToUserProfile(
+    uid: string,
+    callback: (profile: UserProfile | null) => void,
+  ) {
+    const docRef = doc(db, 'users', uid);
+
+    // onSnapshot listens for live changes to this specific user's document
+    return onSnapshot(docRef, docSnap => {
+      if (docSnap.exists()) {
+        callback(docSnap.data() as UserProfile);
+      } else {
+        callback(null);
+      }
+    });
   }
 }
 

@@ -10,7 +10,7 @@ import { styles } from './ProfileTextInput.styles.ts';
 interface ProfileTextInputProps extends TextInputProps {
   label: string;
   value: string;
-  onChangeText: (text: string) => void;
+  onChangeText?: (text: string) => void;
   error?: string;
 }
 

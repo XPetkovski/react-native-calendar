@@ -1,45 +1,11 @@
-// src/navigation/TabNavigator.tsx
 import React from 'react';
-import { Text, TouchableOpacity } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-
-// Screens & Icons
 import { DashboardScreen } from '../screens/DashboardScreen';
 import { ProfileScreen } from '../screens/ProfileScreen';
-import { ProfileIcon } from '../assets/icons/Profile';
-import { MobilePhoneIcon } from '../assets/icons/MobilePhone';
-
-// Styles
-import { styles } from './TabNavigator.styles';
+import { renderDashboardIcon, renderProfileIcon } from './TabIcons';
+import { HeaderAvatar } from '../components/navigation/HeaderAvatar';
 
 const Tab = createBottomTabNavigator();
-
-// --- Stable Icon References ---
-const renderDashboardIcon = ({
-  color,
-  size,
-}: {
-  color: string;
-  size: number;
-}) => <MobilePhoneIcon color={color} size={size} />;
-
-const renderProfileIcon = ({
-  color,
-  size,
-}: {
-  color: string;
-  size: number;
-}) => <ProfileIcon color={color} size={size} />;
-
-// --- Custom Header Right Avatar ---
-const HeaderAvatar = () => (
-  <TouchableOpacity
-    style={styles.avatarButton}
-    onPress={() => console.log('Avatar clicked!')}
-  >
-    <Text style={styles.avatarText}>HP</Text>
-  </TouchableOpacity>
-);
 
 export const TabNavigator = () => {
   return (

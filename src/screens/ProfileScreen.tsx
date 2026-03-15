@@ -1,4 +1,3 @@
-// src/screens/ProfileScreen.tsx
 import React, { useState, useEffect } from 'react';
 import {
   View,
@@ -8,49 +7,53 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-
 import { styles } from './ProfileScreen.styles';
 import { ProfileTextInput } from '../components/common/ProfileTextInput.tsx';
 import { ConfirmationDialog } from '../components/common/ConfirmationDialog.tsx';
-
-// Services
 import AuthService from '../services/AuthService';
 import UserService from '../services/UserService';
 
 export const ProfileScreen = () => {
   const currentUser = AuthService.getCurrentUser();
 
-  // Form State
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [email, setEmail] = useState(currentUser?.email || '');
-  const [position, setPosition] = useState('');
+  const [savedName, setSavedName] = useState({ firstName: '', lastName: '' });
 
-  // Loading & Updating States
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    position: '',
+  });
+
   const [isLoading, setIsLoading] = useState(true);
   const [isUpdating, setIsUpdating] = useState(false);
 
-  // --- Modal States ---
   const [isLogoutModalVisible, setLogoutModalVisible] = useState(false);
   const [isDeactivateModalVisible, setDeactivateModalVisible] = useState(false);
-
-  // NEW: Success and Error Modal States
   const [isSuccessModalVisible, setSuccessModalVisible] = useState(false);
   const [errorModalConfig, setErrorModalConfig] = useState({
     visible: false,
     message: '',
   });
 
-  // --- 1. Fetch Profile on Load ---
+  const handleInputChange = (field: keyof typeof formData, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
   useEffect(() => {
     const loadProfile = async () => {
       if (currentUser) {
         try {
           const profile = await UserService.getUserProfile(currentUser.uid);
           if (profile) {
-            setFirstName(profile.firstName);
-            setLastName(profile.lastName);
-            setPosition(profile.position);
+            setSavedName({
+              firstName: profile.firstName,
+              lastName: profile.lastName,
+            });
+            setFormData({
+              firstName: profile.firstName,
+              lastName: profile.lastName,
+              position: profile.position,
+            });
           }
         } catch (error) {
           console.error('Failed to load profile', error);
@@ -61,27 +64,24 @@ export const ProfileScreen = () => {
     loadProfile();
   }, [currentUser]);
 
-  // --- 2. Update Profile ---
   const handleUpdateProfile = async () => {
     if (!currentUser) return;
 
     setIsUpdating(true);
     try {
-      await UserService.updateUserProfile(currentUser.uid, {
-        firstName,
-        lastName,
-        position,
+      await UserService.updateUserProfile(currentUser.uid, formData);
+
+      setSavedName({
+        firstName: formData.firstName,
+        lastName: formData.lastName,
       });
-      // Replace Alert with our custom modal
       setSuccessModalVisible(true);
     } catch (error: any) {
-      // Replace Alert with our custom modal
       setErrorModalConfig({ visible: true, message: error.message });
     }
     setIsUpdating(false);
   };
 
-  // --- Modal Actions ---
   const confirmLogout = async () => {
     setLogoutModalVisible(false);
     try {
@@ -92,24 +92,15 @@ export const ProfileScreen = () => {
   };
 
   const confirmDeactivate = async () => {
-    setDeactivateModalVisible(false); // Hide the confirmation dialog
-
+    setDeactivateModalVisible(false);
     if (!currentUser) return;
 
     try {
-      setIsUpdating(true); // Show the loading spinner on the screen
-
-      // 1. Wipe their profile data from the database
+      setIsUpdating(true);
       await UserService.deleteUserProfile(currentUser.uid);
-
-      // 2. Destroy their Firebase Auth account
       await AuthService.deleteAccount();
-
-      // 3. DO NOTHING ELSE! RootNavigator will automatically route to SignIn
     } catch (error: any) {
       setIsUpdating(false);
-
-      // Handle Firebase's strict security rule
       if (error.code === 'auth/requires-recent-login') {
         setErrorModalConfig({
           visible: true,
@@ -124,12 +115,7 @@ export const ProfileScreen = () => {
 
   if (isLoading) {
     return (
-      <View
-        style={[
-          styles.safeArea,
-          { justifyContent: 'center', alignItems: 'center' },
-        ]}
-      >
+      <View style={[ styles.safeArea, styles.activityIndicator ]}>
         <ActivityIndicator size="large" color="#0052cc" />
       </View>
     );
@@ -139,32 +125,34 @@ export const ProfileScreen = () => {
     <SafeAreaProvider style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.container}>
         <Text style={styles.headerTitle}>
-          {firstName ? `${firstName} ${lastName}` : 'My Profile'}
+          {savedName.firstName
+            ? `${savedName.firstName} ${savedName.lastName}`
+            : 'My Profile'
+          }
         </Text>
 
         <View style={styles.formContainer}>
           <ProfileTextInput
             label="First Name"
-            value={firstName}
-            onChangeText={setFirstName}
+            value={formData.firstName}
+            onChangeText={(val: string) => handleInputChange('firstName', val)}
           />
           <ProfileTextInput
             label="Last Name"
-            value={lastName}
-            onChangeText={setLastName}
+            value={formData.lastName}
+            onChangeText={(val: string) => handleInputChange('lastName', val)}
           />
           <ProfileTextInput
             label="Email Address"
-            value={email}
-            onChangeText={setEmail}
+            value={currentUser?.email || ''}
             editable={false}
             keyboardType="email-address"
             autoCapitalize="none"
           />
           <ProfileTextInput
             label="Position"
-            value={position}
-            onChangeText={setPosition}
+            value={formData.position}
+            onChangeText={(val: string) => handleInputChange('position', val)}
           />
         </View>
 
@@ -195,7 +183,6 @@ export const ProfileScreen = () => {
         </TouchableOpacity>
       </ScrollView>
 
-      {/* --- Action Modals --- */}
       <ConfirmationDialog
         visible={isLogoutModalVisible}
         title="Log Out"
@@ -216,14 +203,12 @@ export const ProfileScreen = () => {
         onConfirm={confirmDeactivate}
       />
 
-      {/* --- NEW: Success & Error Modals (No Cancel Button) --- */}
       <ConfirmationDialog
         visible={isSuccessModalVisible}
         title="Success"
         message="Profile updated successfully!"
         confirmText="OK"
         onConfirm={() => setSuccessModalVisible(false)}
-        // Omit onCancel so only the OK button shows
       />
 
       <ConfirmationDialog
@@ -231,9 +216,8 @@ export const ProfileScreen = () => {
         title="Error"
         message={errorModalConfig.message}
         confirmText="OK"
-        isDestructive={true} // Makes the OK button red to signify an error
+        isDestructive={true}
         onConfirm={() => setErrorModalConfig({ visible: false, message: '' })}
-        // Omit onCancel
       />
     </SafeAreaProvider>
   );
