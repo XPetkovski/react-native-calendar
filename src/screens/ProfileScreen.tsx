@@ -43,7 +43,7 @@ export const ProfileScreen = ({ navigation }: any) => {
   return (
     <SafeAreaProvider style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.container}>
-        <Text style={styles.headerTitle}>My Profile</Text>
+        <Text style={styles.headerTitle}>{firstName + " " + lastName}</Text>
 
         <View style={styles.formContainer}>
           <ProfileTextInput
