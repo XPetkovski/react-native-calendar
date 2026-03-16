@@ -16,6 +16,8 @@ import AuthService from '../services/AuthService'; // <-- IMPORT THE SERVICE
 
 export const SignUpScreen = ({ navigation }: any) => {
   // disclaimer: left some screens with classic simpler way of coding useStates for view purpose
+  // to demonstrate Atomic State management in contrast to
+  // the Unified State pattern used in the Dashboard screens.
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');

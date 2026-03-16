@@ -17,6 +17,8 @@ import { ConfirmationDialog } from '../components/common/ConfirmationDialog.tsx'
 
 export const SignInScreen = ({ navigation }: any) => {
   // left some screens with classic simpler way of coding useStates for view purpose
+  // to demonstrate Atomic State management in contrast to
+  // the Unified State pattern used in the Dashboard screens.
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');

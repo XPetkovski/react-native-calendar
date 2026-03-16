@@ -27,6 +27,8 @@ export const ProfileScreen = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isUpdating, setIsUpdating] = useState(false);
   // left some screens with classic simpler way of coding useStates for view purpose
+  // to demonstrate Atomic State management in contrast to
+  // the Unified State pattern used in the Dashboard screens.
   const [isLogoutModalVisible, setLogoutModalVisible] = useState(false);
   const [isDeactivateModalVisible, setDeactivateModalVisible] = useState(false);
   const [isSuccessModalVisible, setSuccessModalVisible] = useState(false);
@@ -115,7 +117,7 @@ export const ProfileScreen = () => {
 
   if (isLoading) {
     return (
-      <View style={[ styles.safeArea, styles.activityIndicator ]}>
+      <View style={[styles.safeArea, styles.activityIndicator]}>
         <ActivityIndicator size="large" color="#0052cc" />
       </View>
     );
@@ -127,8 +129,7 @@ export const ProfileScreen = () => {
         <Text style={styles.headerTitle}>
           {savedName.firstName
             ? `${savedName.firstName} ${savedName.lastName}`
-            : 'My Profile'
-          }
+            : 'My Profile'}
         </Text>
 
         <View style={styles.formContainer}>
