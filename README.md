@@ -1,6 +1,6 @@
 This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
 
-# Package.json i.e what 
+# Package.json i.e which libraries are used
 
 > {
   "name": "", //hidden name, shown in real json
