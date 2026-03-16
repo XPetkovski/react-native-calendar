@@ -1,11 +1,9 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { useAuth } from '../context/AuthContext';
 import { SignInScreen } from '../screens/SignInScreen';
 import { SignUpScreen } from '../screens/SignUpScreen';
 import { TabNavigator } from './TabNavigator';
-import { ActivityIndicator, View } from 'react-native';
-import { styles } from './RootNavigator.styles.ts';
+import { useAuth } from '../context/AuthContext';
 
 const Stack = createNativeStackNavigator();
 
@@ -13,22 +11,27 @@ export const RootNavigator = () => {
   const { user, loading } = useAuth();
 
   if (loading) {
-    return (
-      <View style={styles.activityIndicator}>
-        <ActivityIndicator size="large" color="#0052cc" />
-      </View>
-    );
+    return null;
   }
 
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
-      {user ? (
-        <Stack.Screen name="MainApp" component={TabNavigator} />
-      ) : (
-        <>
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+        animation: 'ios_from_left',
+        gestureEnabled: true,
+        gestureDirection: 'horizontal',
+      }}
+    >
+      {!user ? (
+        <Stack.Group screenOptions={{ animation: 'fade' }}>
           <Stack.Screen name="SignIn" component={SignInScreen} />
           <Stack.Screen name="SignUp" component={SignUpScreen} />
-        </>
+        </Stack.Group>
+      ) : (
+        <Stack.Group screenOptions={{ animation: 'slide_from_bottom' }}>
+          <Stack.Screen name="MainTabs" component={TabNavigator} />
+        </Stack.Group>
       )}
     </Stack.Navigator>
   );
