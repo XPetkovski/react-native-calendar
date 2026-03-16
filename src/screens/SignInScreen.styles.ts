@@ -3,12 +3,12 @@ import { StyleSheet } from 'react-native';
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f9f9f9'
+    backgroundColor: '#f9f9f9',
   },
   keyboardView: {
     flex: 1,
     justifyContent: 'center',
-    paddingHorizontal: 20
+    paddingHorizontal: 20,
   },
   headerTitle: {
     fontSize: 32,
@@ -29,7 +29,7 @@ export const styles = StyleSheet.create({
   errorText: {
     color: 'red',
     marginBottom: 15,
-    textAlign: 'center'
+    textAlign: 'center',
   },
   button: {
     backgroundColor: '#0052cc',
@@ -48,15 +48,15 @@ export const styles = StyleSheet.create({
   buttonText: {
     color: '#fff',
     fontSize: 18,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   linkButton: {
     marginTop: 20,
-    alignItems: 'center'
+    alignItems: 'center',
   },
   linkText: {
     color: '#0052cc',
-    fontSize: 16
+    fontSize: 16,
   },
   biometricButton: {
     backgroundColor: '#fff',
@@ -71,5 +71,9 @@ export const styles = StyleSheet.create({
     color: '#0052cc',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  logoContainer: {
+    alignItems: 'center',
+    marginBottom: 20
   },
 });

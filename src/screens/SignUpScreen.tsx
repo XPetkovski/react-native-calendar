@@ -6,11 +6,13 @@ import {
   KeyboardAvoidingView,
   Platform,
   ActivityIndicator,
+  View,
 } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { styles } from './SignUpScreen.styles';
 import { isValidEmail, isValidPassword } from '../utils/utils';
 import AuthService from '../services/AuthService';
+import { BankLogo } from '../assets/icons/BankLogo.tsx';
 
 export const SignUpScreen = ({ navigation }: any) => {
   // disclaimer: left some screens with classic simpler way of coding useStates for view purpose
@@ -54,6 +56,11 @@ export const SignUpScreen = ({ navigation }: any) => {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.keyboardView}
       >
+        <View style={styles.logoContainer}>
+          {/*Added purely for demonstrative purposes as how a company logo would fit here*/}
+          <BankLogo width={90} height={90} color="#0052cc" />
+        </View>
+
         <Text style={styles.headerTitle}>Create Account</Text>
 
         {error ? <Text style={styles.errorText}>{error}</Text> : null}

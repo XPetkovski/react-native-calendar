@@ -6,6 +6,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   ActivityIndicator,
+  View,
 } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import AuthService from '../services/AuthService';
@@ -14,6 +15,7 @@ import { authenticateWithBiometrics } from '../services/biometricService';
 import { styles } from './SignInScreen.styles';
 import { isValidEmail } from '../utils/utils';
 import { ConfirmationDialog } from '../components/common/ConfirmationDialog.tsx';
+import { BankLogo } from '../assets/icons/BankLogo.tsx';
 
 export const SignInScreen = ({ navigation }: any) => {
   // left some screens with classic simpler way of coding useStates for view purpose
@@ -93,6 +95,11 @@ export const SignInScreen = ({ navigation }: any) => {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.keyboardView}
       >
+        <View style={styles.logoContainer}>
+          {/*Added purely for demonstrative purposes as how a company logo would fit here*/}
+          <BankLogo width={90} height={90} color="#0052cc" />
+        </View>
+
         <Text style={styles.headerTitle}>Welcome Back</Text>
 
         {error ? <Text style={styles.errorText}>{error}</Text> : null}
