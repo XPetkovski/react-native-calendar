@@ -197,7 +197,7 @@ export const ProfileScreen = () => {
       <ConfirmationDialog
         visible={isDeactivateModalVisible}
         title="Deactivate Account"
-        message="Are you sure? This will soft-delete your account and return you to the sign-in screen."
+        message="Are you sure? This will delete your account and return you to the sign-in screen."
         confirmText="Deactivate"
         isDestructive={true}
         onCancel={() => setDeactivateModalVisible(false)}
