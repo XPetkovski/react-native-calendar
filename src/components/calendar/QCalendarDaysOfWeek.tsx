@@ -1,4 +1,3 @@
-// src/components/calendar/QCalendarDaysOfWeek.tsx
 import React from 'react';
 import { View, Text } from 'react-native';
 import { styles } from './QCalendar.styles';

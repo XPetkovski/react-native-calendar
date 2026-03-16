@@ -1,4 +1,3 @@
-// src/components/calendar/QCalendarGrid.tsx
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { styles } from './QCalendar.styles';
@@ -22,7 +21,7 @@ export const QCalendarGrid: React.FC<QCalendarGridProps> = ({
 }) => {
   const grid = [];
 
-  // 1. Fill empty slots before the 1st with PREVIOUS month's ghost days
+  // previous month ghost days
   const daysInPrevMonth = new Date(year, month, 0).getDate();
   for (let i = 0; i < firstDayOfMonth; i++) {
     const prevDay = daysInPrevMonth - firstDayOfMonth + i + 1;
@@ -33,7 +32,7 @@ export const QCalendarGrid: React.FC<QCalendarGridProps> = ({
     );
   }
 
-  // 2. Fill the actual active days
+  // active days
   for (let day = 1; day <= daysInMonth; day++) {
     const isSelected =
       selectedDate?.getDate() === day &&
@@ -65,7 +64,7 @@ export const QCalendarGrid: React.FC<QCalendarGridProps> = ({
     );
   }
 
-  // 3. Fill the remaining slots with NEXT month's ghost days
+  // Next month's ghost days
   const totalRendered = firstDayOfMonth + daysInMonth;
   const remainingSlots = 42 - totalRendered;
 

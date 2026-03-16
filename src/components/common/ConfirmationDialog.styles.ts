@@ -1,10 +1,9 @@
-// src/components/ConfirmationDialog.styles.ts
 import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent black background
+    backgroundColor: '#00000080',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -17,7 +16,7 @@ export const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
     shadowRadius: 10,
-    elevation: 5, // For Android shadow
+    elevation: 5,
   },
   title: {
     fontSize: 20,
@@ -33,7 +32,7 @@ export const styles = StyleSheet.create({
   },
   buttonContainer: {
     flexDirection: 'row',
-    justifyContent: 'flex-end', // Aligns buttons to the right
+    justifyContent: 'flex-end',
   },
   button: {
     paddingVertical: 10,
@@ -50,10 +49,10 @@ export const styles = StyleSheet.create({
     fontWeight: '600',
   },
   confirmButton: {
-    backgroundColor: '#0052cc', // Default Corporate Blue
+    backgroundColor: '#0052cc',
   },
   destructiveButton: {
-    backgroundColor: '#d71920', // Warning Red for deletes/logouts
+    backgroundColor: '#d71920',
   },
   confirmButtonText: {
     color: '#fff',

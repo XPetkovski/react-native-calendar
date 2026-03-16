@@ -24,7 +24,6 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
   visible,
   onSave,
 }) => {
-  // --- Combined Form State ---
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -34,13 +33,12 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // Generic handler to update any field in the object
   const handleInputChange = (field: keyof typeof formData, value: string) => {
     setFormData(prev => ({
       ...prev,
       [field]: value,
     }));
-    if (error) setError(''); // Clear error when user starts typing
+    if (error) setError('');
   };
 
   const handleSave = async () => {

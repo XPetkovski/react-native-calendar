@@ -1,4 +1,3 @@
-// src/screens/SignUpScreen.tsx
 import React, { useState } from 'react';
 import {
   Text,
@@ -11,8 +10,7 @@ import {
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { styles } from './SignUpScreen.styles';
 import { isValidEmail, isValidPassword } from '../utils/utils';
-
-import AuthService from '../services/AuthService'; // <-- IMPORT THE SERVICE
+import AuthService from '../services/AuthService';
 
 export const SignUpScreen = ({ navigation }: any) => {
   // disclaimer: left some screens with classic simpler way of coding useStates for view purpose
@@ -23,7 +21,6 @@ export const SignUpScreen = ({ navigation }: any) => {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  // Real Firebase Registration
   const validateAndSignUp = async () => {
     setError('');
 
@@ -38,13 +35,12 @@ export const SignUpScreen = ({ navigation }: any) => {
     }
 
     if (!isValidPassword(password)) {
-      setError('Password must be at least 6 characters.');
+      setError('Password must be at least 8 characters and include an uppercase letter, lowercase letter, number.');
       return;
     }
 
     try {
       setIsLoading(true);
-      // Call Firebase! If it succeeds, RootNavigator instantly pulls you to the Dashboard
       await AuthService.register(email, password);
     } catch (err: any) {
       setError(err.message.replace('Firebase: ', ''));

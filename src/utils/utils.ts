@@ -4,5 +4,8 @@ export const isValidEmail = (email: string): boolean => {
 };
 
 export const isValidPassword = (password: string): boolean => {
-  return password.length >= 6;
+  // regex to check if at least one lowercase, one uppercase, one number is present
+  const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+
+  return strongPasswordRegex.test(password);
 };

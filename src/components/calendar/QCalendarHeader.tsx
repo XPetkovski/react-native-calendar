@@ -1,4 +1,3 @@
-// src/components/calendar/QCalendarHeader.tsx
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { styles } from './QCalendar.styles';

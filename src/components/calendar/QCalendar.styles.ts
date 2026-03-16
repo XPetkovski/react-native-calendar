@@ -5,9 +5,11 @@ export const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 16,
     padding: 15,
-    // Soft shadow for that enterprise look
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
+    shadowOffset: {
+      width: 0,
+      height: 4
+    },
     shadowOpacity: 0.05,
     shadowRadius: 10,
     elevation: 3,
@@ -48,7 +50,7 @@ export const styles = StyleSheet.create({
   },
   dayCell: {
     width: '14.28%', // 100% divided by 7 days
-    aspectRatio: 1, // Keeps them perfectly square
+    aspectRatio: 1,
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 20,
@@ -73,6 +75,6 @@ export const styles = StyleSheet.create({
   },
   disabledDayText: {
     fontSize: 16,
-    color: '#d3d3d3', // Light gray color for next/prev month days
+    color: '#d3d3d3',
   },
 });

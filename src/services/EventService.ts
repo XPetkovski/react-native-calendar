@@ -1,4 +1,3 @@
-// src/services/EventService.ts
 import {
   collection,
   addDoc,

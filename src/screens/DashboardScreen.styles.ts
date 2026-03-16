@@ -1,4 +1,3 @@
-// src/screens/DashboardScreen.styles.ts
 import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
@@ -62,7 +61,7 @@ export const styles = StyleSheet.create({
     shadowOpacity: 0.05,
     shadowRadius: 2,
     elevation: 1,
-    alignItems: 'center', // Centers the content and the trash can vertically
+    alignItems: 'center'
   },
   eventTime: {
     width: 50,
@@ -72,7 +71,7 @@ export const styles = StyleSheet.create({
     marginRight: 12,
   },
   eventInfo: {
-    flex: 1, // Pushes the delete button completely to the right edge
+    flex: 1,
   },
   eventTitle: {
     fontSize: 16,
@@ -85,7 +84,7 @@ export const styles = StyleSheet.create({
     color: '#666',
   },
   deleteButton: {
-    padding: 8, // Creates a nice, large invisible tap target around the icon
+    padding: 8,
     marginLeft: 10,
   },
 });

@@ -1,7 +1,7 @@
 import * as Keychain from 'react-native-keychain';
 
 class SecureStoreService {
-  // We use a constant service name to ensure we are always looking in the same vault
+  // using constant service name to ensure we are always looking in the same vault
   private SERVICE_NAME = 'quipu_auth_vault';
 
   async saveCredentials(email: string, pass: string) {

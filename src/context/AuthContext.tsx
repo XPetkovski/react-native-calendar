@@ -44,8 +44,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
-// Adding a check here ensures that if you try to use useAuth()
-// outside of the Provider, the app gives you a helpful error instead of just crashing.
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {

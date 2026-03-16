@@ -27,12 +27,12 @@ class UserService {
 
   async createUserProfile(uid: string, data: UserProfile) {
     const docRef = doc(db, 'users', uid);
-    await setDoc(docRef, data); // setDoc creates the document
+    await setDoc(docRef, data);
   }
 
   async updateUserProfile(uid: string, data: Partial<UserProfile>) {
     const docRef = doc(db, 'users', uid);
-    await updateDoc(docRef, data); // updateDoc only changes the provided fields
+    await updateDoc(docRef, data);
   }
 
   async deleteUserProfile(uid: string) {

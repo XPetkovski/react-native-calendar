@@ -1,16 +1,13 @@
-// src/components/icons/ProfileIcon.tsx
 import React from 'react';
 import { StyleProp, ViewStyle } from 'react-native';
 import Svg, { Path, G } from 'react-native-svg';
 
-// 1. Define the TypeScript interface for our props
 interface ProfileIconProps {
   size?: number;
   style?: StyleProp<ViewStyle>;
   color?: string;
 }
 
-// 2. Apply the interface and set default values
 export const ProfileIcon = ({
   size = 24,
   style,
@@ -20,7 +17,7 @@ export const ProfileIcon = ({
     <Svg width={size} height={size} style={style} viewBox="0 0 29.055 33.374">
       <G
         fill="none"
-        stroke={color} // 3. Use the dynamic color here!
+        stroke={color}
         strokeLinecap="round"
         strokeLinejoin="round"
         strokeWidth="2.5"

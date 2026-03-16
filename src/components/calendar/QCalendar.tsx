@@ -18,8 +18,8 @@ export const QCalendar: React.FC<QCalendarProps> = ({ onDateSelect }) => {
   // Destructure for cleaner usage below
   const { currentDate, selectedDate } = calendarState;
 
-  // --- 2. Date Math Helpers (Memoized for performance finesse) ---
-  // This ensures the math only runs when the user changes the month/year!
+  // Date Math Helpers (Memoized for performance finesse)
+  // math only runs when the user changes the month/year!
   const { year, month, daysInMonth, firstDayOfMonth } = useMemo(() => {
     const y = currentDate.getFullYear();
     const m = currentDate.getMonth();
@@ -31,7 +31,6 @@ export const QCalendar: React.FC<QCalendarProps> = ({ onDateSelect }) => {
     };
   }, [currentDate]);
 
-  // --- 3. Handlers ---
   const handlePrevMonth = () => {
     setCalendarState(prev => ({
       ...prev,

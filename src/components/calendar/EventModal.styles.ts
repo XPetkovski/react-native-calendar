@@ -1,10 +1,9 @@
-// src/components/calendar/EventModal.styles.ts
 import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.4)', // The dark translucent background
+    backgroundColor: '#00000066',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -48,12 +47,12 @@ export const styles = StyleSheet.create({
   },
   textArea: {
     height: 100,
-    textAlignVertical: 'top', // Fixes Android text alignment
+    textAlignVertical: 'top',
   },
   buttonRow: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
-    gap: 12, // Space between buttons
+    gap: 12,
     marginTop: 10,
   },
   button: {

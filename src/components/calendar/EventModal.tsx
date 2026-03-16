@@ -1,4 +1,3 @@
-// src/components/calendar/EventModal.tsx
 import React, { useState, useEffect } from 'react';
 import {
   Modal,
@@ -33,14 +32,13 @@ export const EventModal: React.FC<EventModalProps> = ({
   onClose,
   onSave,
 }) => {
-  // --- 1. Combined Form State (Inline, matching your style) ---
+
   const [formData, setFormData] = useState({
     title: '',
     time: '',
     description: '',
   });
 
-  // --- 2. Generic Input Handler ---
   const handleInputChange = (field: keyof typeof formData, value: string) => {
     setFormData(prev => ({
       ...prev,
@@ -48,7 +46,6 @@ export const EventModal: React.FC<EventModalProps> = ({
     }));
   };
 
-  // --- 3. Sync state when modal opens ---
   useEffect(() => {
     if (visible) {
       setFormData({
@@ -62,11 +59,9 @@ export const EventModal: React.FC<EventModalProps> = ({
   const handleSave = () => {
     const { title, time, description } = formData;
 
-    // Basic Validation (Finesse: check for whitespace only)
     if (!title.trim()) return;
 
     const eventToSave: CalendarEvent = {
-      // If we are editing, keep the original ID; otherwise, generate a temporary one
       id: initialEvent?.id || Date.now().toString(),
       title: title.trim(),
       time: time.trim(),
@@ -75,7 +70,6 @@ export const EventModal: React.FC<EventModalProps> = ({
 
     onSave(eventToSave);
 
-    // Clear the form data when saving so it's fresh for the next "New Meeting"
     setFormData({ title: '', time: '', description: '' });
     onClose();
   };
@@ -106,7 +100,6 @@ export const EventModal: React.FC<EventModalProps> = ({
             })}
           </Text>
 
-          {/* Form Fields using our generic handler */}
           <TextInput
             style={styles.input}
             placeholder="Meeting Title"
@@ -136,7 +129,7 @@ export const EventModal: React.FC<EventModalProps> = ({
             <TouchableOpacity
               style={[styles.button, styles.cancelButton]}
               onPress={() => {
-                setFormData({ title: '', time: '', description: '' }); // Clear on cancel too
+                setFormData({ title: '', time: '', description: '' });
                 onClose();
               }}
             >

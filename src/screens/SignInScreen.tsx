@@ -30,7 +30,7 @@ export const SignInScreen = ({ navigation }: any) => {
     message: '',
   });
 
-  // --- Manual Email/Password Sign In ---
+  // Manual Email/Password Sign In
   const validateAndSignIn = async () => {
     setError('');
 
@@ -46,7 +46,6 @@ export const SignInScreen = ({ navigation }: any) => {
 
     try {
       setIsLoading(true);
-      // 1. Auth with Firebase
       await AuthService.login(email, password);
       await SecureStoreService.saveCredentials(email, password);
     } catch (err: any) {
@@ -55,7 +54,7 @@ export const SignInScreen = ({ navigation }: any) => {
     }
   };
 
-  // --- Biometric Sign In (The "Vault" Logic) ---
+  // Biometric Sign In
   const handleBiometricLogin = async () => {
     setError('');
 

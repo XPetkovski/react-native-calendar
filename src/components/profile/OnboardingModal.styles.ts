@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 export const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    backgroundColor: '#00000080',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -14,9 +14,21 @@ export const styles = StyleSheet.create({
     padding: 24,
     elevation: 5,
   },
-  title: { fontSize: 22, fontWeight: 'bold', color: '#333', marginBottom: 8 },
-  subtitle: { fontSize: 14, color: '#666', marginBottom: 20 },
-  errorText: { color: '#d71920', marginBottom: 10 },
+  title: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 8,
+  },
+  subtitle: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 20,
+  },
+  errorText: {
+    color: '#d71920',
+    marginBottom: 10,
+  },
   input: {
     backgroundColor: '#f8f9fa',
     borderWidth: 1,
@@ -33,5 +45,9 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 10,
   },
-  saveButtonText: { color: '#fff', fontWeight: 'bold', fontSize: 16 },
+  saveButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
 });

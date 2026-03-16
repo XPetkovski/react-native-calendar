@@ -1,4 +1,3 @@
-// src/screens/ProfileScreen.styles.ts
 import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
@@ -18,21 +17,21 @@ export const styles = StyleSheet.create({
     color: '#333',
     textAlign: 'center',
   },
-
   formContainer: {
     marginBottom: 30,
   },
-
-  // Buttons
   updateButton: {
-    backgroundColor: '#0052cc', // Corporate Blue
+    backgroundColor: '#0052cc',
     padding: 15,
     borderRadius: 8,
     alignItems: 'center',
     marginBottom: 15,
   },
-  updateButtonText: { color: '#fff', fontSize: 18, fontWeight: 'bold' },
-
+  updateButtonText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold'
+  },
   logoutButton: {
     backgroundColor: 'transparent',
     borderWidth: 1,
@@ -42,10 +41,13 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 15,
   },
-  logoutButtonText: { color: '#888', fontSize: 18, fontWeight: 'bold' },
-
+  logoutButtonText: {
+    color: '#888',
+    fontSize: 18,
+    fontWeight: 'bold'
+  },
   deactivateButton: {
-    backgroundColor: '#d71920', // Warning Red
+    backgroundColor: '#d71920',
     padding: 15,
     borderRadius: 8,
     alignItems: 'center',
