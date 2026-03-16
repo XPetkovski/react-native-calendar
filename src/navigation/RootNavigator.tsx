@@ -24,7 +24,7 @@ export const RootNavigator = () => {
       }}
     >
       {!user ? (
-        <Stack.Group screenOptions={{ animation: 'fade' }}>
+        <Stack.Group screenOptions={{ animation: 'slide_from_right' }}>
           <Stack.Screen name="SignIn" component={SignInScreen} />
           <Stack.Screen name="SignUp" component={SignUpScreen} />
         </Stack.Group>
