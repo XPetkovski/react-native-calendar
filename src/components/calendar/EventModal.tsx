@@ -9,6 +9,7 @@ import {
   Platform,
 } from 'react-native';
 import { styles } from './EventModal.styles';
+import { formatTimeInput, isTimeValid } from '../../utils/utils';
 
 export interface CalendarEvent {
   id: string;
@@ -32,18 +33,23 @@ export const EventModal: React.FC<EventModalProps> = ({
   onClose,
   onSave,
 }) => {
-
   const [formData, setFormData] = useState({
     title: '',
     time: '',
     description: '',
   });
+  const [error, setError] = useState('');
 
   const handleInputChange = (field: keyof typeof formData, value: string) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: value,
-    }));
+    setFormData(prev => ({ ...prev, [field]: value }));
+    if (error) {
+      setError('');
+    }
+  };
+
+  const handleTimeChange = (text: string) => {
+    const formatted = formatTimeInput(text);
+    handleInputChange('time', formatted);
   };
 
   useEffect(() => {
@@ -53,24 +59,37 @@ export const EventModal: React.FC<EventModalProps> = ({
         time: initialEvent?.time || '',
         description: initialEvent?.description || '',
       });
+      setError('');
     }
   }, [visible, initialEvent]);
 
   const handleSave = () => {
     const { title, time, description } = formData;
 
-    if (!title.trim()) return;
+    if (!title.trim()) {
+      setError('Meeting title is required.');
+      return;
+    }
+
+    if (!isTimeValid(time)) {
+      setError('Please enter a valid time (00:00 - 23:59).');
+      return;
+    }
 
     const eventToSave: CalendarEvent = {
       id: initialEvent?.id || Date.now().toString(),
       title: title.trim(),
-      time: time.trim(),
+      time: time,
       description: description.trim(),
     };
 
     onSave(eventToSave);
+    resetAndClose();
+  };
 
+  const resetAndClose = () => {
     setFormData({ title: '', time: '', description: '' });
+    setError('');
     onClose();
   };
 
@@ -79,7 +98,7 @@ export const EventModal: React.FC<EventModalProps> = ({
       visible={visible}
       transparent={true}
       animationType="fade"
-      onRequestClose={onClose}
+      onRequestClose={resetAndClose}
     >
       <KeyboardAvoidingView
         style={styles.overlay}
@@ -110,10 +129,12 @@ export const EventModal: React.FC<EventModalProps> = ({
 
           <TextInput
             style={styles.input}
-            placeholder="Time (e.g. 14:00)"
+            placeholder="Time (HH:MM)"
             placeholderTextColor="#aaa"
             value={formData.time}
-            onChangeText={val => handleInputChange('time', val)}
+            onChangeText={handleTimeChange}
+            keyboardType="number-pad"
+            maxLength={5}
           />
 
           <TextInput
@@ -128,10 +149,7 @@ export const EventModal: React.FC<EventModalProps> = ({
           <View style={styles.buttonRow}>
             <TouchableOpacity
               style={[styles.button, styles.cancelButton]}
-              onPress={() => {
-                setFormData({ title: '', time: '', description: '' });
-                onClose();
-              }}
+              onPress={resetAndClose}
             >
               <Text style={styles.cancelButtonText}>Cancel</Text>
             </TouchableOpacity>
