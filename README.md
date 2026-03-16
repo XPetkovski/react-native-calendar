@@ -2,7 +2,8 @@ This is a new [**React Native**](https://reactnative.dev) project, bootstrapped 
 
 # Package.json i.e which libraries are used
 
-> {
+```sh
+ {
   "name": "", //hidden name, shown in real json
   "version": "0.0.1",
   "private": true,
@@ -54,6 +55,8 @@ This is a new [**React Native**](https://reactnative.dev) project, bootstrapped 
     "node": ">= 22.11.0"
   }
 }
+
+```
 
 # Getting Started
 
