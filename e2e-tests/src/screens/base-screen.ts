@@ -1,6 +1,6 @@
 import { Browser, ChainablePromiseElement } from 'webdriverio';
 
-export default class BaseScreen {
+export abstract class BaseScreen {
     public driver: Browser;
 
     constructor(driver: Browser) {

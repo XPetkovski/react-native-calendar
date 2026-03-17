@@ -1,4 +1,4 @@
-import BaseScreen from './base-screen';
+import { BaseScreen } from './base-screen';
 
 export class ProfileScreen extends BaseScreen {
     
