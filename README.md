@@ -13,6 +13,7 @@ Important: Not using Redux since its very small level app,
 also what I would improve where needed to add classes to be more OOP,
 I use object literals, cause its small scale, but Im aware, I use and have worked the true OOP way of Typescript
 And that is what I would improve mainly, adding Encapuslation & Abstraction, Model Class for the models
+EDIT: Added SignIn Controller for demonstrative purposes and part of the refactor
 
 Something like this example
 
