@@ -9,18 +9,12 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import AuthService from '../services/AuthService';
-import SecureStoreService from '../services/SecureStoreService';
-import { authenticateWithBiometrics } from '../services/biometricService';
 import { styles } from './SignInScreen.styles';
-import { isValidEmail } from '../utils/utils';
 import { ConfirmationDialog } from '../components/common/ConfirmationDialog.tsx';
 import { BankLogo } from '../assets/icons/BankLogo.tsx';
+import signInController from '../controllers/SignInController';
 
 export const SignInScreen = ({ navigation }: any) => {
-  // left some screens with classic simpler way of coding useStates for view purpose
-  // to demonstrate Atomic State management in contrast to
-  // the Unified State pattern used in the Dashboard screens.
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -32,60 +26,37 @@ export const SignInScreen = ({ navigation }: any) => {
     message: '',
   });
 
-  // Manual Email/Password Sign In
   const validateAndSignIn = async () => {
     setError('');
-
-    if (!email || !password) {
-      setError('Please enter both email and password.');
-      return;
-    }
-
-    if (!isValidEmail(email)) {
-      setError('Please enter a valid email address.');
-      return;
-    }
+    setIsLoading(true);
 
     try {
-      setIsLoading(true);
-      await AuthService.login(email, password);
-      await SecureStoreService.saveCredentials(email, password);
+      await signInController.loginWithEmail(email, password);
     } catch (err: any) {
-      setError(err.message.replace('Firebase: ', ''));
+      setError(err.message);
+    } finally {
       setIsLoading(false);
     }
   };
 
-  // Biometric Sign In
   const handleBiometricLogin = async () => {
     setError('');
+    setIsLoading(true);
 
-    // First, check if biometrics are hardware-supported
-    const bioCheck = await authenticateWithBiometrics();
-
-    if (bioCheck.isNotSupported) {
-      setDialogConfig({
-        visible: true,
-        title: 'Not Supported',
-        message: 'Biometrics are not available or enrolled on this device.',
-      });
-      return;
-    }
-
-    // 2. If supported, try to retrieve vaulted credentials
-    const credentials = await SecureStoreService.getStoredCredentials();
-
-    if (credentials) {
-      try {
-        setIsLoading(true);
-        // Auto log in with retrieved email/pass
-        await AuthService.login(credentials.email, credentials.password);
-      } catch (err: any) {
-        setError(err);
-        setIsLoading(false);
+    try {
+      await signInController.loginWithBiometrics();
+    } catch (err: any) {
+      if (err.message === 'BIOMETRICS_NOT_SUPPORTED') {
+        setDialogConfig({
+          visible: true,
+          title: 'Not Supported',
+          message: 'Biometrics are not available or enrolled on this device.',
+        });
+      } else {
+        setError(err.message);
       }
-    } else {
-      setError('Please sign in manually once to enable biometrics.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -96,7 +67,6 @@ export const SignInScreen = ({ navigation }: any) => {
         style={styles.keyboardView}
       >
         <View style={styles.logoContainer}>
-          {/*Added purely for demonstrative purposes as how a company logo would fit here*/}
           <BankLogo width={90} height={90} color="#0052cc" />
         </View>
 
