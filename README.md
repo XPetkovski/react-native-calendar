@@ -29,7 +29,6 @@ export class CalendarEvent {
     this.description = description;
   }
 
-  // OOP Logic: The data knows how to format itself
   getFormattedSummary(): string {
     return `${this.time} - ${this.title}`;
   }
