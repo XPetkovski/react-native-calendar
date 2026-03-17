@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "CommonJS",
+    "lib": ["ES2022"],
+    "moduleResolution": "node",
+    "baseUrl": "./src/",
+    "paths": {
+      "@tests/*": ["tests/*"],
+      "@screens/*": ["screens/*"],
+      "@utils/*": ["utils/*"]
+    },
+
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "outDir": "./dist",
+    
+    "types": ["node", "webdriverio", "mocha"]
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
+}
