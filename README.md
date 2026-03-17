@@ -8,6 +8,11 @@ For IOS I used XCode to build it and then ran on IPhone 17 Pro Integrated MAC Si
 For Android Google Pixel 9 via Android Studio
 ```
 
+```
+Not using Redux since its very small level app, also what I would improve where needed to add classes to be more OOP, I use object literals, cause its small scale, but Im aware, I use and have worked the true OOP way of Typescript
+And that is what I would improve mainly, adding Encapuslation & Abstraction, Model Class for the models
+```
+
 ```sh
  {
   "name": "", // hidden here, shown in real app
