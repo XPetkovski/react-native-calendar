@@ -74,6 +74,9 @@ export const SignUpScreen = ({ navigation }: any) => {
           value={email}
           onChangeText={setEmail}
           editable={!isLoading}
+          testID="email"
+          accessible={true}
+          accessibilityLabel="email"
         />
 
         <TextInput
@@ -84,6 +87,9 @@ export const SignUpScreen = ({ navigation }: any) => {
           value={password}
           onChangeText={setPassword}
           editable={!isLoading}
+          testID="password"
+          accessible={true}
+          accessibilityLabel="password"
         />
 
         <TouchableOpacity
@@ -94,7 +100,7 @@ export const SignUpScreen = ({ navigation }: any) => {
           {isLoading ? (
             <ActivityIndicator color="#fff" />
           ) : (
-            <Text style={styles.buttonText}>Sign Up</Text>
+            <Text style={styles.buttonText} testID="sign-up" accessible={true} accessibilityLabel="sign-up">Sign Up</Text>
           )}
         </TouchableOpacity>
 

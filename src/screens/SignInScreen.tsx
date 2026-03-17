@@ -156,7 +156,7 @@ export const SignInScreen = ({ navigation }: any) => {
           onPress={() => navigation.navigate('SignUp')}
           disabled={isLoading}
         >
-          <Text style={styles.linkText}>Don't have an account? Sign Up</Text>
+          <Text style={styles.linkText} testID="register" accessible={true} accessibilityLabel="register">Don't have an account? Sign Up</Text>
         </TouchableOpacity>
       </KeyboardAvoidingView>
 

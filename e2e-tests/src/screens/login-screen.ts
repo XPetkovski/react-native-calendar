@@ -14,11 +14,24 @@ export class LoginScreen extends BaseScreen {
         return this.getByTestID('sign-in')
     }
 
-    async login(emailValue: string, passwordValue: string) {
-        await (await this.emailField).setValue(emailValue);
-        await (await this.passwordField).setValue(passwordValue);
+    public get registerPageLink() {
+        return this.getByTestID('register');
+    }
+
+    public get signUpButton() {
+        return this.getByTestID('sign-up')
+    }
+
+    async register(email: string, password: string) {
+        await (await this.registerPageLink).click();
+        await (await this.emailField).setValue(email);
+        await (await this.passwordField).setValue(password);
+        await (await this.signUpButton).click();
+    }
+
+    async login(email: string, password: string) {
+        await (await this.emailField).setValue(email);
+        await (await this.passwordField).setValue(password);
         await (await this.signInButton).click();
-        // const password = await this.passwordField;
-        // await password.setValue(passwordValue);
     }
 }

@@ -5,7 +5,7 @@ import { ProfileScreen } from '@screens/profile-screen';
 import { getDriver } from '@utils/driver';
 import { expect } from 'expect-webdriverio'
 
-describe.skip("login suite", async () => {
+describe.skip("calendar suite", async () => {
 
     let driver: Browser;
     let loginScreen: LoginScreen;
@@ -17,12 +17,13 @@ describe.skip("login suite", async () => {
         loginScreen = new LoginScreen(driver);
         calendarScreen = new CalendarScreen(driver);
         profileScreen = new ProfileScreen(driver);
+        await loginScreen.login('ilovetesting999@gmail.com', 'Test123!');
     });
 
-    it('should login with a valid user', async () => {
+    it('should create an event ', async () => {
         try {
-            await loginScreen.login('ilovetesting999@gmail.com', 'Test123!');
-            await expect(driver.$('//*[@text="Your Schedule"]')).toBeDisplayed();
+            
+            
         } catch { throw new Error('Error')}
     });
 

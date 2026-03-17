@@ -51,6 +51,9 @@ export const ConfirmationDialog = ({
                 isDestructive ? styles.destructiveButton : styles.confirmButton,
               ]}
               onPress={onConfirm}
+              testID="confirm"
+              accessible={true}
+              accessibilityLabel="confirm"
             >
               <Text style={styles.confirmButtonText}>{confirmText}</Text>
             </TouchableOpacity>

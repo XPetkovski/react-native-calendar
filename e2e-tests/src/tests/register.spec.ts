@@ -5,30 +5,32 @@ import { ProfileScreen } from '@screens/profile-screen';
 import { getDriver } from '@utils/driver';
 import { expect } from 'expect-webdriverio'
 
-describe.skip("login suite", async () => {
+describe("register suite", async () => {
 
     let driver: Browser;
     let loginScreen: LoginScreen;
     let calendarScreen: CalendarScreen
     let profileScreen: ProfileScreen;
+    let randomString: string;
     
     beforeEach(async () => {
         driver = await getDriver();
         loginScreen = new LoginScreen(driver);
         calendarScreen = new CalendarScreen(driver);
         profileScreen = new ProfileScreen(driver);
+        randomString = Math.random().toString(36).substring(2, 8);;
     });
 
-    it('should login with a valid user', async () => {
+    it('should register', async () => {
         try {
-            await loginScreen.login('ilovetesting999@gmail.com', 'Test123!');
-            await expect(driver.$('//*[@text="Your Schedule"]')).toBeDisplayed();
+            await loginScreen.register(`${randomString}@test.com`, 'Test123!');
+            await expect(driver.$('//*[@text="Welcome to Quipu!"]')).toBeDisplayed();
         } catch { throw new Error('Error')}
     });
 
     afterEach(async () => {
-        await (await calendarScreen.profilePicture).click();
-        await profileScreen.logout();
+        // await (await calendarScreen.profilePicture).click();
+        // await profileScreen.logout();
         await driver.deleteSession();
     });
 

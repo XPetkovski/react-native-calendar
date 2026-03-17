@@ -18,4 +18,8 @@ export default class BaseScreen {
         return this.getByTestID('profile'); 
     }
 
+    public get dialogConfirmButton() {
+        return this.getByTestID('confirm');
+    }
+
 }
