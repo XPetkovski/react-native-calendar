@@ -3,7 +3,7 @@ This is a new [**React Native**](https://reactnative.dev) project, bootstrapped 
 # Package.json i.e which libraries are used
 
 ```sh
-For IOS ran on IPhone 17 Pro Integrated MAC Simulator OS version 26.3
+For IOS I used XCode to build it and then ran on IPhone 17 Pro Integrated MAC Simulator OS version 26.3
 
 For Android Google Pixel 9 via Android Studio
 ```
