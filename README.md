@@ -10,7 +10,7 @@ For Android Google Pixel 9 via Android Studio
 
 ```sh
  {
-  "name": "QuipuApp",
+  "name": "", // hidden here, shown in real app
   "version": "0.0.1",
   "private": true,
   "scripts": {
