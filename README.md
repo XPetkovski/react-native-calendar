@@ -3,14 +3,47 @@ This is a new [**React Native**](https://reactnative.dev) project, bootstrapped 
 # Package.json i.e which libraries are used
 
 ```sh
-For IOS ran on IPhone 17 Pro Integrated MAC Simulator OS version 26.3
+For IOS I used XCode to build it and then ran on IPhone 17 Pro Integrated MAC Simulator OS version 26.3
 
 For Android Google Pixel 9 via Android Studio
 ```
 
+```
+Important: Not using Redux since its very small level app,
+also what I would improve where needed to add classes to be more OOP,
+I use object literals, cause its small scale, but Im aware, I use and have worked the true OOP way of Typescript
+And that is what I would improve mainly, adding Encapuslation & Abstraction, Model Class for the models
+
+Something like this example
+
+export class CalendarEvent {
+  id: string;
+  title: string;
+  time: string;
+  description: string;
+
+  constructor(id: string, title: string, time: string, description: string) {
+    this.id = id;
+    this.title = title;
+    this.time = time;
+    this.description = description;
+  }
+
+  getFormattedSummary(): string {
+    return `${this.time} - ${this.title}`;
+  }
+
+  isWorkHours(): boolean {
+    const hour = parseInt(this.time.split(':')[0]);
+    return hour >= 9 && hour <= 17;
+  }
+}
+
+```
+
 ```sh
  {
-  "name": "", //hidden name, shown in real json
+  "name": "", // hidden here, shown in real app
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -18,7 +51,8 @@ For Android Google Pixel 9 via Android Studio
     "ios": "react-native run-ios",
     "lint": "eslint .",
     "start": "react-native start",
-    "test": "jest"
+    "test": "jest",
+    "coverage": "jest --coverage"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^2.2.0",
@@ -48,6 +82,8 @@ For Android Google Pixel 9 via Android Studio
     "@react-native/eslint-config": "0.84.1",
     "@react-native/metro-config": "0.84.1",
     "@react-native/typescript-config": "0.84.1",
+    "@testing-library/jest-native": "^5.4.3",
+    "@testing-library/react-native": "^13.3.3",
     "@types/jest": "^29.5.13",
     "@types/react": "^19.2.0",
     "@types/react-test-renderer": "^19.1.0",
@@ -61,7 +97,6 @@ For Android Google Pixel 9 via Android Studio
     "node": ">= 22.11.0"
   }
 }
-
 ```
 
 # Getting Started
