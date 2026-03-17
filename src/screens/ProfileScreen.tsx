@@ -24,14 +24,14 @@ export const ProfileScreen = () => {
     position: '',
   });
 
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [isUpdating, setIsUpdating] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isUpdating, setIsUpdating] = useState(false);
   // left some screens with classic simpler way of coding useStates for view purpose
   // to demonstrate Atomic State management in contrast to
   // the Unified State pattern used in the Dashboard screens.
-  const [isLogoutModalVisible, setLogoutModalVisible] = useState<boolean>(false);
-  const [isDeactivateModalVisible, setDeactivateModalVisible] = useState<boolean>(false);
-  const [isSuccessModalVisible, setSuccessModalVisible] = useState<boolean>(false);
+  const [isLogoutModalVisible, setLogoutModalVisible] = useState(false);
+  const [isDeactivateModalVisible, setDeactivateModalVisible] = useState(false);
+  const [isSuccessModalVisible, setSuccessModalVisible] = useState(false);
   const [errorModalConfig, setErrorModalConfig] = useState({
     visible: false,
     message: '',
