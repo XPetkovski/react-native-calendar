@@ -13,6 +13,33 @@ Important: Not using Redux since its very small level app,
 also what I would improve where needed to add classes to be more OOP,
 I use object literals, cause its small scale, but Im aware, I use and have worked the true OOP way of Typescript
 And that is what I would improve mainly, adding Encapuslation & Abstraction, Model Class for the models
+
+Something like this example
+
+export class CalendarEvent {
+  id: string;
+  title: string;
+  time: string;
+  description: string;
+
+  constructor(id: string, title: string, time: string, description: string) {
+    this.id = id;
+    this.title = title;
+    this.time = time;
+    this.description = description;
+  }
+
+  // OOP Logic: The data knows how to format itself
+  getFormattedSummary(): string {
+    return `${this.time} - ${this.title}`;
+  }
+
+  isWorkHours(): boolean {
+    const hour = parseInt(this.time.split(':')[0]);
+    return hour >= 9 && hour <= 17;
+  }
+}
+
 ```
 
 ```sh
