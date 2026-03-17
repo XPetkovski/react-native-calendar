@@ -9,7 +9,9 @@ For Android Google Pixel 9 via Android Studio
 ```
 
 ```
-Important: Not using Redux since its very small level app, also what I would improve where needed to add classes to be more OOP, I use object literals, cause its small scale, but Im aware, I use and have worked the true OOP way of Typescript
+Important: Not using Redux since its very small level app,
+also what I would improve where needed to add classes to be more OOP,
+I use object literals, cause its small scale, but Im aware, I use and have worked the true OOP way of Typescript
 And that is what I would improve mainly, adding Encapuslation & Abstraction, Model Class for the models
 ```
 
