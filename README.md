@@ -33,11 +33,6 @@ export class CalendarEvent {
   getFormattedSummary(): string {
     return `${this.time} - ${this.title}`;
   }
-
-  isWorkHours(): boolean {
-    const hour = parseInt(this.time.split(':')[0]);
-    return hour >= 9 && hour <= 17;
-  }
 }
 
 ```
