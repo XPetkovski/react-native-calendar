@@ -10,7 +10,7 @@ For Android Google Pixel 9 via Android Studio
 
 ```sh
  {
-  "name": "", //hidden name, shown in real json
+  "name": "QuipuApp",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -18,7 +18,8 @@ For Android Google Pixel 9 via Android Studio
     "ios": "react-native run-ios",
     "lint": "eslint .",
     "start": "react-native start",
-    "test": "jest"
+    "test": "jest",
+    "coverage": "jest --coverage"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^2.2.0",
@@ -48,6 +49,8 @@ For Android Google Pixel 9 via Android Studio
     "@react-native/eslint-config": "0.84.1",
     "@react-native/metro-config": "0.84.1",
     "@react-native/typescript-config": "0.84.1",
+    "@testing-library/jest-native": "^5.4.3",
+    "@testing-library/react-native": "^13.3.3",
     "@types/jest": "^29.5.13",
     "@types/react": "^19.2.0",
     "@types/react-test-renderer": "^19.1.0",
@@ -61,7 +64,6 @@ For Android Google Pixel 9 via Android Studio
     "node": ">= 22.11.0"
   }
 }
-
 ```
 
 # Getting Started
