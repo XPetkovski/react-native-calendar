@@ -173,7 +173,7 @@ export const ProfileScreen = () => {
           style={styles.logoutButton}
           onPress={() => setLogoutModalVisible(true)}
         >
-          <Text style={styles.logoutButtonText}>Log Out</Text>
+          <Text style={styles.logoutButtonText} testID="logout" accessible={true} accessibilityLabel="logout">Log Out</Text>
         </TouchableOpacity>
 
         <TouchableOpacity

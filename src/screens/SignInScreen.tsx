@@ -83,6 +83,9 @@ export const SignInScreen = ({ navigation }: any) => {
           value={email}
           onChangeText={setEmail}
           editable={!isLoading}
+          testID="email"
+          accessible={true}
+          accessibilityLabel="email"
         />
 
         <TextInput
@@ -93,6 +96,9 @@ export const SignInScreen = ({ navigation }: any) => {
           value={password}
           onChangeText={setPassword}
           editable={!isLoading}
+          testID="password"
+          accessible={true}
+          accessibilityLabel="password"
         />
 
         <TouchableOpacity
@@ -103,7 +109,7 @@ export const SignInScreen = ({ navigation }: any) => {
           {isLoading ? (
             <ActivityIndicator color="#fff" />
           ) : (
-            <Text style={styles.buttonText}>Sign In</Text>
+            <Text style={styles.buttonText} testID="sign-in" accessible={true} accessibilityLabel="sign-in">Sign In</Text>
           )}
         </TouchableOpacity>
 
@@ -120,7 +126,7 @@ export const SignInScreen = ({ navigation }: any) => {
           onPress={() => navigation.navigate('SignUp')}
           disabled={isLoading}
         >
-          <Text style={styles.linkText}>Don't have an account? Sign Up</Text>
+          <Text style={styles.linkText} testID="register" accessible={true} accessibilityLabel="register">Don't have an account? Sign Up</Text>
         </TouchableOpacity>
       </KeyboardAvoidingView>
 

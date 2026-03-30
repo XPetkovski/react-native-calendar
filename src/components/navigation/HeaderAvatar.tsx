@@ -43,6 +43,9 @@ export const HeaderAvatar = () => {
       style={styles.avatarButton}
       onPress={() => navigation.navigate('Profile')}
       disabled={isLoading}
+      testID="profile"
+      accessible={true}
+      accessibilityLabel="profile"
     >
       {isLoading ? (
         <ActivityIndicator size="small" color="#fff" />
